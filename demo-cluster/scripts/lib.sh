@@ -132,6 +132,10 @@ demo_cluster_check() {
     echo "ERROR: $CLUSTER_PROVIDER is not installed." >&2
     return 1
   fi
+  # KIND_EXPERIMENTAL_PROVIDER must be set to podman when using podman instead of Docker
+  if [[ "$CONTAINER_PLATFORM" == "podman" && "$CLUSTER_PROVIDER" == "kind" ]]; then
+    export KIND_EXPERIMENTAL_PROVIDER=podman
+  fi
   if ! cluster_exists; then
     echo "ERROR: $CLUSTER_PROVIDER cluster '$CLUSTER_NAME' not found. Create it with ${RUN_PREFIX}./scripts/up.sh." >&2
     return 1

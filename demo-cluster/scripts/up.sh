@@ -45,6 +45,10 @@ cd "$DEMO_DIR"
 : "${CONTAINER_PLATFORM:=docker}"
 check_container_platform
 
+if [[ "$CONTAINER_PLATFORM" == "podman" && "$CLUSTER_PROVIDER" == "kind" ]]; then
+  export KIND_EXPERIMENTAL_PROVIDER=podman
+fi
+
 NS_APPS="demo-apps"
 NS_MON="monitoring"
 NS_K8SGPT="k8sgpt-system"
