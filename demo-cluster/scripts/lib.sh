@@ -17,6 +17,7 @@
 DEMO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CLUSTER_NAME="${CLUSTER_NAME:-demo-cluster}"
 CLUSTER_PROVIDER="${CLUSTER_PROVIDER:-kind}"
+CONTAINER_PLATFORM="${CONTAINER_PLATFORM:=docker}"
 case "$CLUSTER_PROVIDER" in
   kind|k3d) ;;
   *)

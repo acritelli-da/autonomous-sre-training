@@ -42,7 +42,6 @@ K8SGPT_VERSION="v0.4.39"
 load_env
 cd "$DEMO_DIR"
 
-: "${CONTAINER_PLATFORM:=docker}"
 check_container_platform
 
 if [[ "$CONTAINER_PLATFORM" == "podman" && "$CLUSTER_PROVIDER" == "kind" ]]; then

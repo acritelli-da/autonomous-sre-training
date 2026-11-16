@@ -15,7 +15,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 load_env
-require_demo_cluster
+
+if [[ "$CONTAINER_PLATFORM" == "podman" && "$CLUSTER_PROVIDER" == "kind" ]]; then
+  export KIND_EXPERIMENTAL_PROVIDER=podman
+fi
 
 # Background helpers first, so none of them is left pointing at a cluster
 # that no longer exists.
