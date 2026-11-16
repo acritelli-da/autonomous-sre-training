@@ -12,7 +12,7 @@ Run every command from this directory (`demo-cluster/`).
 ## What runs in the cluster
 
 ```
-Your laptop (Docker)
+Your laptop (Docker or Podman)
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ kind or k3d cluster "demo-cluster" (one node)                                │
 │                                                                              │
@@ -101,6 +101,7 @@ K8sGPT writes Results without AI explanations and nothing goes to Slack.
 
 | `.env` key | Default | Meaning |
 |---|---|---|
+| `CONTAINER_PLATFORM` | docker | The container platform to use. Accepts `docker` or `podman`. |
 | `LLM_API_KEY` | empty | Empty: no AI explanations. Set it to turn them on. |
 | `K8SGPT_BACKEND` | `openai` | K8sGPT AI backend. `openai` also covers every OpenAI-compatible API. |
 | `K8SGPT_MODEL` | `gpt-4o-mini` (`gpt-oss:20b` with `K8SGPT_LOCAL=true`) | Model name. |
@@ -521,7 +522,7 @@ The chart and image versions are set at the top of
 |---|---|---|
 | `up.sh` stops with `FAIL` | A step failed | Read the log it names (`.run/<cluster>/up-<timestamp>/`), fix the cause, re-run `./scripts/up.sh`. |
 | `soft-reset.sh` ends with `done with errors` | One or more steps failed | It lists each failed step with its log (`.run/<cluster>/soft-reset-<timestamp>/`) and last lines. Fix the cause and re-run it, or use `./scripts/reset.sh`. |
-| `missing tools: ...` or `Docker is not running.` | A prerequisite is missing | Install it or start Docker. |
+| `missing tools: ...` or `Docker (or Podman) is not running.` | A prerequisite is missing | Install it or start Docker or Podman. |
 | `kind create cluster` fails or the node never gets Ready | Too little memory for Docker, or kind is older than v0.33.0 | Give Docker at least 6 GB. Upgrade kind, or run `KIND_NODE_IMAGE= ./scripts/up.sh`. |
 | `kind cluster 'demo-cluster' not found` (or `k3d cluster ...`) | The cluster was deleted | `./scripts/up.sh` |
 | `context 'kind-demo-cluster' points at ...` or `your kubeconfig has no 'kind-demo-cluster' context` | Your kubeconfig lost or changed the cluster's entry | `kind export kubeconfig --name demo-cluster`, or on k3d `k3d kubeconfig merge demo-cluster --kubeconfig-merge-default` |

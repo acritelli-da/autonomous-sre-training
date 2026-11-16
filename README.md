@@ -27,7 +27,7 @@ The cluster runs on your laptop. An LLM and Slack are optional.
 | [Helm](https://helm.sh/docs/intro/install/) | v3.8 (OCI charts); v4 for `helm test --logs` | v4.3.0 |
 | curl, bash | bash 3.2 (the macOS default) or later | bash 3.2.57 |
 
-`up.sh` checks for these tools and for a running Docker before it starts.
+`up.sh` checks for these tools and for a running conatiner environment (Docker or Podman) before it starts.
 To run the demo on a [k3d](https://k3d.io) cluster instead of kind, see
 [Using k3d instead of kind](demo-cluster/README.md#using-k3d-instead-of-kind).
 You don't need Python or Go on your machine: the apps and the watcher are
@@ -202,8 +202,8 @@ make ci         # every CI check; none needs a cluster
   `demo-cluster/.run/demo-cluster/up-<timestamp>/NN-<step>.log`; the K8sGPT
   resource it applied is saved there too, as `k8sgpt-cr.yaml`. Fix the cause
   and re-run `./scripts/up.sh`.
-- **Docker is not running, or runs out of memory.** Start Docker and give it
-  at least 6 GB (Docker Desktop: Settings > Resources).
+- **The container environment (Docker or Podman) is not running, or runs out of memory.** Start Podman and give it
+  at least 6 GB (Docker or Podman Desktop: Settings > Resources).
 - **kind fails to start the node.** The pinned node image needs kind v0.33.0
   or later. Upgrade kind, or run with `KIND_NODE_IMAGE= ./scripts/up.sh` to use
   your kind version's default image.
