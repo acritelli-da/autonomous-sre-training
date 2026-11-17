@@ -43,10 +43,7 @@ load_env
 cd "$DEMO_DIR"
 
 check_container_platform
-
-if [[ "$CONTAINER_PLATFORM" == "podman" && "$CLUSTER_PROVIDER" == "kind" ]]; then
-  export KIND_EXPERIMENTAL_PROVIDER=podman
-fi
+set_kind_provider
 
 NS_APPS="demo-apps"
 NS_MON="monitoring"

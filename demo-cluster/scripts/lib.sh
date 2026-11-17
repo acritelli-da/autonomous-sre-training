@@ -99,6 +99,14 @@ check_container_platform() {
   esac
 }
 
+# set_kind_provider: point kind at podman when CONTAINER_PLATFORM is podman.
+# kind uses docker unless KIND_EXPERIMENTAL_PROVIDER says otherwise.
+set_kind_provider() {
+  if [[ "${CONTAINER_PLATFORM:-docker}" == "podman" && "$CLUSTER_PROVIDER" == "kind" ]]; then
+    export KIND_EXPERIMENTAL_PROVIDER=podman
+  fi
+}
+
 # load_images IMAGE...: copy local container images into the cluster's nodes.
 load_images() {
   if [[ "${CONTAINER_PLATFORM:-docker}" == "podman" ]]; then
@@ -133,10 +141,7 @@ demo_cluster_check() {
     echo "ERROR: $CLUSTER_PROVIDER is not installed." >&2
     return 1
   fi
-  # KIND_EXPERIMENTAL_PROVIDER must be set to podman when using podman instead of Docker
-  if [[ "$CONTAINER_PLATFORM" == "podman" && "$CLUSTER_PROVIDER" == "kind" ]]; then
-    export KIND_EXPERIMENTAL_PROVIDER=podman
-  fi
+  set_kind_provider
   if ! cluster_exists; then
     echo "ERROR: $CLUSTER_PROVIDER cluster '$CLUSTER_NAME' not found. Create it with ${RUN_PREFIX}./scripts/up.sh." >&2
     return 1
