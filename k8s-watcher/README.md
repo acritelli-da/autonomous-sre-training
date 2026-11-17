@@ -95,7 +95,7 @@ run. The steps below run against the kind cluster's context only:
 ```sh
 # Docker or podman are used to build the container, depending on the value of CONTAINER_PLATFORM
 docker build -t localhost/k8s-watcher:dev k8s-watcher/
-kind load docker-image k8s-watcher:dev --name demo-cluster
+kind load docker-image localhost/k8s-watcher:dev --name demo-cluster
 helm upgrade --install k8s-watcher charts/k8s-watcher \
   --kube-context kind-demo-cluster -n k8sgpt-system \
   -f demo-cluster/helm/watcher-values.yaml --wait
