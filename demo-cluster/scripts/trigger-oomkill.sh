@@ -81,6 +81,7 @@ stop() {
 }
 
 start() {
+  load_env
   require_demo_cluster
   if pidfile_alive "$OOM_LOOP_PIDFILE" "$OOM_LOOP_MATCH"; then
     echo "Already running (PID $(cat "$OOM_LOOP_PIDFILE")). Run ${RUN_PREFIX}$0 --stop first to restart it."

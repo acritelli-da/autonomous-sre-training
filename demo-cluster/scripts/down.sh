@@ -14,6 +14,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
+load_env
+
+set_kind_provider
+
 # Background helpers first, so none of them is left pointing at a cluster
 # that no longer exists.
 if stop_pidfile "$PERSES_PF_PIDFILE" "$PERSES_PF_MATCH"; then

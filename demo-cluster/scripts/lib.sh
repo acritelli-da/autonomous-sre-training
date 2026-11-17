@@ -17,6 +17,7 @@
 DEMO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CLUSTER_NAME="${CLUSTER_NAME:-demo-cluster}"
 CLUSTER_PROVIDER="${CLUSTER_PROVIDER:-kind}"
+CONTAINER_PLATFORM="${CONTAINER_PLATFORM:=docker}"
 case "$CLUSTER_PROVIDER" in
   kind|k3d) ;;
   *)
@@ -78,8 +79,51 @@ kubeconfig_fix_hint() {
   esac
 }
 
-# load_images IMAGE...: copy local Docker images into the cluster's nodes.
+# container_cli ARGS...: run the container CLI CONTAINER_PLATFORM names
+# (docker, the default, or podman). Read on every call, so a value set in
+# .env by load_env applies.
+container_cli() {
+  if [[ "${CONTAINER_PLATFORM:-docker}" == "podman" ]]; then
+    command podman "$@"
+  else
+    command docker "$@"
+  fi
+}
+
+# check_container_platform: exit unless CONTAINER_PLATFORM is docker or
+# podman.
+check_container_platform() {
+  case "${CONTAINER_PLATFORM:-docker}" in
+    docker|podman) ;;
+    *) die "CONTAINER_PLATFORM must be docker or podman, not '$CONTAINER_PLATFORM'." ;;
+  esac
+}
+
+# set_kind_provider: point kind at podman when CONTAINER_PLATFORM is podman.
+# kind uses docker unless KIND_EXPERIMENTAL_PROVIDER says otherwise.
+set_kind_provider() {
+  if [[ "${CONTAINER_PLATFORM:-docker}" == "podman" && "$CLUSTER_PROVIDER" == "kind" ]]; then
+    export KIND_EXPERIMENTAL_PROVIDER=podman
+  fi
+}
+
+# load_images IMAGE...: copy local container images into the cluster's nodes.
 load_images() {
+  if [[ "${CONTAINER_PLATFORM:-docker}" == "podman" ]]; then
+    # kind load docker-image shells out to docker, so save the images to an
+    # archive instead. -m (--multi-image-archive) lets podman put more than
+    # one image in the archive.
+    local archive
+    archive="$(mktemp "${TMPDIR:-/tmp}/demo-images.XXXXXX")"
+    container_cli save -m -o "$archive" "$@" || { rm -f "$archive"; return 1; }
+    local rc=0
+    case "$CLUSTER_PROVIDER" in
+      kind) kind load image-archive "$archive" --name "$CLUSTER_NAME" || rc=$? ;;
+      k3d) k3d image import "$archive" --cluster "$CLUSTER_NAME" || rc=$? ;;
+    esac
+    rm -f "$archive"
+    return "$rc"
+  fi
   case "$CLUSTER_PROVIDER" in
     kind) kind load docker-image "$@" --name "$CLUSTER_NAME" ;;
     k3d) k3d image import "$@" --cluster "$CLUSTER_NAME" ;;
@@ -97,6 +141,7 @@ demo_cluster_check() {
     echo "ERROR: $CLUSTER_PROVIDER is not installed." >&2
     return 1
   fi
+  set_kind_provider
   if ! cluster_exists; then
     echo "ERROR: $CLUSTER_PROVIDER cluster '$CLUSTER_NAME' not found. Create it with ${RUN_PREFIX}./scripts/up.sh." >&2
     return 1

@@ -19,6 +19,7 @@ set -uo pipefail  # no -e; a failed step is reported at the end, not fatal
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
+load_env
 require_demo_cluster
 
 NS_APPS="demo-apps"

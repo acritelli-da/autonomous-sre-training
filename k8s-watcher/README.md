@@ -93,8 +93,9 @@ missing RBAC rule), the process exits. Its error names the cause, such as
 run. The steps below run against the kind cluster's context only:
 
 ```sh
-docker build -t k8s-watcher:dev k8s-watcher/
-kind load docker-image k8s-watcher:dev --name demo-cluster
+# Docker or podman are used to build the container, depending on the value of CONTAINER_PLATFORM
+docker build -t localhost/k8s-watcher:dev k8s-watcher/
+kind load docker-image localhost/k8s-watcher:dev --name demo-cluster
 helm upgrade --install k8s-watcher charts/k8s-watcher \
   --kube-context kind-demo-cluster -n k8sgpt-system \
   -f demo-cluster/helm/watcher-values.yaml --wait
@@ -205,7 +206,7 @@ make build      # go build; binary in k8s-watcher/bin/watcher
 make test       # go test -race ./...
 make lint       # golangci-lint (config in .golangci.yml)
 make vuln       # govulncheck
-make image      # docker build -t k8s-watcher:dev k8s-watcher/
+make image      # docker build -t localhost/k8s-watcher:dev k8s-watcher/
 make ci         # every check CI runs; none needs a cluster
 ```
 

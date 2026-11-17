@@ -12,7 +12,7 @@ Run every command from this directory (`demo-cluster/`).
 ## What runs in the cluster
 
 ```
-Your laptop (Docker)
+Your laptop (Docker or Podman)
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ kind or k3d cluster "demo-cluster" (one node)                                │
 │                                                                              │
@@ -101,6 +101,7 @@ K8sGPT writes Results without AI explanations and nothing goes to Slack.
 
 | `.env` key | Default | Meaning |
 |---|---|---|
+| `CONTAINER_PLATFORM` | docker | The container platform to use. Accepts `docker` or `podman`. |
 | `LLM_API_KEY` | empty | Empty: no AI explanations. Set it to turn them on. |
 | `K8SGPT_BACKEND` | `openai` | K8sGPT AI backend. `openai` also covers every OpenAI-compatible API. |
 | `K8SGPT_MODEL` | `gpt-4o-mini` (`gpt-oss:20b` with `K8SGPT_LOCAL=true`) | Model name. |
@@ -160,7 +161,7 @@ It runs these steps in order, each with its own log file:
 1. **kind cluster** (or **k3d cluster**): creates `demo-cluster` (or reuses it).
 2. **namespaces**: `demo-apps`, `monitoring`, `k8sgpt-system`.
 3. **metrics-server**, for `kubectl top`.
-4. **build + load sample images**: `payments-api:demo` and `recommend-svc:demo`,
+4. **build + load sample images**: `localhost/payments-api:demo` and `localhost/recommend-svc:demo`,
    built locally and loaded into the cluster's node.
 5. **deploy sample apps + loadgen**.
 6. **kube-prometheus-stack** (Prometheus, Alertmanager, kube-state-metrics,
@@ -177,7 +178,7 @@ It runs these steps in order, each with its own log file:
 12. **K8sGPT CR + LLM secret**: renders
     [`manifests/k8sgpt/k8sgpt-cr.yaml`](manifests/k8sgpt/k8sgpt-cr.yaml) from
     your settings, applies it, and restarts the operator.
-13. **watcher**: builds `k8s-watcher:dev` from `../k8s-watcher`, loads it
+13. **watcher**: builds `localhost/k8s-watcher:dev` from `../k8s-watcher`, loads it
     into the cluster's node and installs the `k8s-watcher` release in
     `k8sgpt-system` with [`helm/watcher-values.yaml`](helm/watcher-values.yaml).
 14. **pod smoke-test**: fails if a pod in the three namespaces is stuck
@@ -521,7 +522,7 @@ The chart and image versions are set at the top of
 |---|---|---|
 | `up.sh` stops with `FAIL` | A step failed | Read the log it names (`.run/<cluster>/up-<timestamp>/`), fix the cause, re-run `./scripts/up.sh`. |
 | `soft-reset.sh` ends with `done with errors` | One or more steps failed | It lists each failed step with its log (`.run/<cluster>/soft-reset-<timestamp>/`) and last lines. Fix the cause and re-run it, or use `./scripts/reset.sh`. |
-| `missing tools: ...` or `Docker is not running.` | A prerequisite is missing | Install it or start Docker. |
+| `missing tools: ...` or `Docker (or Podman) is not running.` | A prerequisite is missing | Install it or start Docker or Podman. |
 | `kind create cluster` fails or the node never gets Ready | Too little memory for Docker, or kind is older than v0.33.0 | Give Docker at least 6 GB. Upgrade kind, or run `KIND_NODE_IMAGE= ./scripts/up.sh`. |
 | `kind cluster 'demo-cluster' not found` (or `k3d cluster ...`) | The cluster was deleted | `./scripts/up.sh` |
 | `context 'kind-demo-cluster' points at ...` or `your kubeconfig has no 'kind-demo-cluster' context` | Your kubeconfig lost or changed the cluster's entry | `kind export kubeconfig --name demo-cluster`, or on k3d `k3d kubeconfig merge demo-cluster --kubeconfig-merge-default` |
