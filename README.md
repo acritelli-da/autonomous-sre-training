@@ -166,7 +166,7 @@ switch back to your usual one afterwards (`kubectl config use-context <name>`).
 
 ## Next steps: connect the cluster to DataAgent
 
-K8sGPT tells you what broke. To see an autonomous SRE platform detect the same failures, run a root cause analysis and propose a remediation plan, connect this cluster to DataAgent's free trial: [demo-cluster/docs/connect-dataagent/README.md](demo-cluster/docs/connect-dataagent/README.md).
+K8sGPT tells you what broke. To see an autonomous SRE platform detect the same failures, run a root cause analysis and propose a remediation plan, connect this cluster to DataAgent's free trial by [following the steps here.](demo-cluster/docs/connect-dataagent/README.md)
 
 ## Repo layout
 
