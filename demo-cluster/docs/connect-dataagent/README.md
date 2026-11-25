@@ -1,6 +1,9 @@
 # Connect a cluster to DataAgent
 
-DataAgent is an autonomous SRE platform that focuses on remediation first. It provides deep root cause analysis based on contextual information in your Kubernetes cluster.
+So far, you have seen how K8sGPT, DataAgent's K8sGPT extension pack, and traditional metrics in Perses can be used to identify different types of incidents. Next, you can extend on these capabilities with a free trial of DataAgent.
+
+DataAgent is a multi-tenant autonomous SRE platform that focuses on remediation first. It provides deep root cause analysis based on contextual information across your Kubernetes clusters.
+
 
 DataAgent provides a free trial for you to see how it identifies, triages, and develops a root cause analysis of faults in a Kubernetes cluster.
 
@@ -94,5 +97,6 @@ In this tutorial, you connected a Kubernetes cluster to DataAgent, injected a fa
 
 * **Meet Otto:** Otto is DataAgent's AI assistant. Ask it questions about your incidents and your cluster to dig deeper into what DataAgent has found. Start interacting with Otto by clicking the **Ask Otto** button on the DataAgent dashboard.
 * **Explore the dashboard:** Try the other failure scenarios in this tutorial and look through the rest of the dashboard to see how DataAgent tracks signals, incidents, and history across your cluster.
+* **Review Signals:** Navigate to the **Signals** page to see the dozens of Signals that DataAgent tracks to enable intelligent decision making. You can filter based on the Signal's source (K8sGPT, Prometheus, and others). This allows you to see how deep root cause analysis requires information from multiple sources.  
 * **Deploy your own workloads:** Connect a cluster that runs your own applications to see how DataAgent handles the faults and incidents in your real environment.
 * **Go deeper with our team:** Want a deep dive into DataAgent for your organization? [Contact us](https://data-agent.co/book-a-demo/) to set up a session with the team.
